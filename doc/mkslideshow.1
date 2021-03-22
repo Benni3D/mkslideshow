@@ -1,0 +1,108 @@
+.TH mkslideshow 1 "2021-03-22"
+
+.SH NAME
+mkslideshow - Make slideshow
+
+.SH SYNOPSIS
+.SY mkslideshow
+.OP -r|-c|-h
+.OP -C codec
+.OP -m music
+.OP -l length
+.I path
+.OP \fIoutput\fR
+.YS
+
+.SH DESCRIPTION
+The
+.I
+mkslideshow
+utility generates a
+.I
+slideshow
+from a folder containing files with the .png file extension.
+
+.SH OPTIONS
+.B -h
+.RE
+.RS 5
+Show the usage of this utility.
+.RE
+.B -r
+.RE
+.RS 5
+Randomize the order in which the pictures will be read.
+.RE
+.B -c
+.RE
+.RS 5
+Convert all non-PNG files to PNG. (requires \fIimagemagick\fR's convert) (WIP)
+.RE
+.B -C \fIcodec\fR
+.RE
+.RS 5
+Specify the \fIcodec\fR in which the output file will be converted. (See \fBCODECS\fR)
+.RE
+.B -m \fImusic\fR
+.RE
+.RS 5
+Specify a \fImusic\fR file which is going to be played in the background of the resulting slideshow.
+.RE
+.B l \fIlength\fR
+.RE
+.RS 5
+Specify the \fIlength\fR of the slideshow. (This option is required, if no \fImusic\fR was provided)
+
+.SH OPERANDS
+.I path
+.RE
+.RS 5
+A path to a directory containing pictures with the \fI.png\fR file extension.
+The first picture, which has been read, specifies the resulting aspect-ratio and color-depth.
+.RE
+.I output
+.RE
+.RS 5
+The path to whrere the resulting slideshow will be saved. (Default output.mp4)
+
+.SH CODECS
+The following video codecs have been verified to work:
+.RE
+- libx264
+.RE
+- libx265
+.RE
+- libopenh264
+
+.SH STDIN
+Not used.
+
+.SH STDOUT
+Used for diagnostic messages.
+
+.SH STDERR
+Used for diagnostic messages.
+
+.SH INPUT FILES
+All files in the \fIpath\fR directory which have a .png file extension.
+
+.SH OUTPUT FILES
+The file specified with the \fIoutput\fR operand.
+
+.SH EXIT STATUS
+0
+.RE
+.RS 5
+0
+The slideshow was successfully created and stored at the location specified with the \fIoutput\fR operand.
+.RE
+>0
+.RE
+.RS 5
+An error occured.
+
+
+
+
+
+

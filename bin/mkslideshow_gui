@@ -1,0 +1,34 @@
+#!/bin/sh
+
+error() {
+   zenity --error --text="$1"
+}
+
+# Check for programs
+[ -z "$(whereis zenity | awk '{print $2}')" ] && echo "Please install zenity" && exit 1
+[ -z "$(whereis ffmpeg | awk '{print $2}')" ] && error "Please install ffmpeg" && exit 1
+[ -z "$(whereis ffprobe | awk '{print $2}')" ] && error "Please install ffprobe" && exit 1
+[ -z "$(whereis mkslideshow | awk '{print $2}')" ] && [ -z "$(ls | grep "^$(dirname $0)/mkslideshow$")" ] && zenity --error --text="Please install mkslideshow" && exit 1
+
+# Get path to directory of Pepes
+pepe_dir=$(zenity --file-selection --directory --text="Directory of PNG images")
+[ $? -ne 0 ] && exit 1
+
+# Verify Pepes
+if [ -z "$pepe_dir" ]; then zenity --error --text="Invalid directory path"; exit 1; fi
+if [ ! -d "$pepe_dir" ]; then zenity --error --text="Directory '$pepes' not found"; exit 1; fi
+
+# Get music file
+music=$(zenity --file-selection --text="Music file")
+[ $? -ne 0 ] && exit 1
+
+# Verify Music
+if [ -z "$music" ]; then zenity --error --text="Invalid music file"; exit 1; fi
+if [ ! -f "$music" ]; then zenity --error --text="Failed to access '$music'"; exit 1; fi
+
+# Get output file
+output=$(zenity --save --file-selection --confirm-overwrite --filename="output.mp4" --text="Output file")
+[ $? -ne 0 ] && exit 1
+if [ -z "$output" ]; then zenity --error --text="Invalid output file"; exit 1; fi
+
+mkslideshow -m "$music" "$pepe_dir" "$output" 
