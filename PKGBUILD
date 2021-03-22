@@ -15,5 +15,5 @@ package() {
    cd "${srcdir}/${pkgname}-${pkgver}"
    install -dm755 "${pkgdir}/usr/share/licenses/${pkgname}"
    install -m644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-   make DESTDIR="${pkdir}/usr" install
+   make DESTDIR="${pkgdir}/usr" install
 }
