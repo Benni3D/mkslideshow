@@ -1,1 +1,65 @@
-/home/benni/.local/bin/mkslideshow
+#!/bin/sh
+
+print_usage() {
+   echo "Usage: $(basename $0) [-r|-c|-h] [-C codec] [-m music] [-l length] path [output]" >&2
+}
+print_help() {
+   print_usage
+}
+
+[ -z "$(whereis ffmpeg | awk '{print $2}')" ] && echo "Please install ffmpeg" >&2 && exit 2
+[ -z "$(whereis ffprobe | awk '{print $2}')" ] && echo "Please install ffprobe" >&2 && exit 2
+#[ $# -ne 3 ] && echo "Usage: $0 <directory> <music> <output>" && exit 1
+
+args=$(getopt -o "hrcm:f:C:l:" -- "$@")
+[ -z "$args" ] && print_usage && exit 1
+eval set -- "$args"
+unset args
+
+# The default codec is libx264
+# Other known working codecs are: libx265, libopenh264
+codec=libx264
+
+# The default output file format is mp4
+# Other known working formats are: mkv
+output=output.mp4
+
+# Parse the arguments
+while true; do
+   case "$1" in
+   -h) print_help; shift; exit ;;
+   -r) shuffle=1; shift; continue ;;
+   -c) convert=1; shift; continue ;;
+   -m) music="$2"; shift 2; continue ;;
+   -l) length="$2"; shift 2; continue ;;
+   -C) codec="$2"; shift 2; continue ;;
+   --) shift; break ;;
+   *) print_usage; exit 1 ;;
+   esac
+done
+
+[ -z "$1" ] &&  print_usage && exit 1
+[ ! -z "$2" ] && output="$2"
+path="$1"
+
+if [ -z "$length" ]; then
+   [ -z "$music" ] && echo "If no music was specified, a length must be specified!" >&2 && exit 1
+   length=$(ffprobe -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$music" 2> /dev/null)
+fi
+
+# Find all Pepe Nudes that end with .png
+if [ -z "$shuffle" ]; then
+   pepes="$(ls "$path"/*.png)"
+else
+   pepes="$(echo "$path"/*.png | tr ' ' '\n' | shuf | tr '\n' ' ')"
+fi
+
+# Find out how many Pepes there are
+num_pepes=$(echo $pepes | wc -w)
+
+# Calculate the framerate of the slideshow
+framerate=$(echo "scale=6; ${num_pepes}.0 / $length" | bc)
+
+[ ! -z "$music" ] && music="-i '$music'"
+cat $pepes | ffmpeg -y -framerate "$framerate" -f image2pipe -i - $music -vcodec "$codec" "$output" >/dev/null
+
