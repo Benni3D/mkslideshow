@@ -60,6 +60,10 @@ num_pepes=$(echo $pepes | wc -w)
 # Calculate the framerate of the slideshow
 framerate=$(echo "scale=6; ${num_pepes}.0 / $length" | bc)
 
-[ ! -z "$music" ] && music="-i '$music'"
-cat $pepes | ffmpeg -y -framerate "$framerate" -f image2pipe -i - $music -vcodec "$codec" "$output" >/dev/null
+if [ -z "$music" ]; then
+   cat $pepes | ffmpeg -y -framerate "$framerate" -f image2pipe -i - -i "$music" -vcodec "$codec" "$output" >/dev/null
+else 
+   cat $pepes | ffmpeg -y -framerate "$framerate" -f image2pipe -i - -vcodec "$codec" "$output" >/dev/null
+fi
+
 

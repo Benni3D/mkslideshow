@@ -1,11 +1,11 @@
 # Maintainer: Benjamin Stürz <benni@stuerz.xyz>
 pkgname=mkslideshow
-pkgver=1.0
+pkgver=1.1
 pkgrel=1
 pkgdesc="A small tool for making simple slide-shows"
 arch=('any')
 url="https://github.com/Benni3D/mkslideshow.git"
-license=('GPLv2')
+license=('GPL2')
 depends=('ffmpeg')
 optdepends=('zenity: needed by mkslideshow_gui')
 source=("https://github.com/Benni3D/mkslideshow/archive/v${pkgver}.tar.gz")
