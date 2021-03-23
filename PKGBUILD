@@ -1,6 +1,6 @@
 # Maintainer: Benjamin Stürz <benni@stuerz.xyz>
 pkgname=mkslideshow
-pkgver=1.1
+pkgver=1.2
 pkgrel=1
 pkgdesc="A small tool for making simple slide-shows"
 arch=('any')

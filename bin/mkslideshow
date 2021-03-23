@@ -62,8 +62,10 @@ framerate=$(echo "scale=6; ${num_pepes}.0 / $length" | bc)
 
 if [ ! -z "$music" ]; then
    cat $pepes | ffmpeg -y -framerate "$framerate" -f image2pipe -i - -i "$music" -vcodec "$codec" "$output" >/dev/null
+   exit $?
 else 
    cat $pepes | ffmpeg -y -framerate "$framerate" -f image2pipe -i - -vcodec "$codec" "$output" >/dev/null
+   exit $?
 fi
 
 

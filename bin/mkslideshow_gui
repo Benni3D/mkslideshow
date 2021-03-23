@@ -8,27 +8,33 @@ error() {
 [ -z "$(whereis zenity | awk '{print $2}')" ] && echo "Please install zenity" && exit 1
 [ -z "$(whereis ffmpeg | awk '{print $2}')" ] && error "Please install ffmpeg" && exit 1
 [ -z "$(whereis ffprobe | awk '{print $2}')" ] && error "Please install ffprobe" && exit 1
-[ -z "$(whereis mkslideshow | awk '{print $2}')" ] && [ -z "$(ls | grep "^$(dirname $0)/mkslideshow$")" ] && zenity --error --text="Please install mkslideshow" && exit 1
+[ -z "$(whereis mkslideshow | awk '{print $2}')" ] && [ -z "$(ls | grep "^$(dirname $0)/mkslideshow$")" ] && error "Please install mkslideshow" && exit 1
 
 # Get path to directory of Pepes
 pepe_dir=$(zenity --file-selection --directory --text="Directory of PNG images")
 [ $? -ne 0 ] && exit 1
 
 # Verify Pepes
-if [ -z "$pepe_dir" ]; then zenity --error --text="Invalid directory path"; exit 1; fi
-if [ ! -d "$pepe_dir" ]; then zenity --error --text="Directory '$pepes' not found"; exit 1; fi
+if [ -z "$pepe_dir" ]; then error "Invalid directory path"; exit 1; fi
+if [ ! -d "$pepe_dir" ]; then error "Directory '$pepes' not found"; exit 1; fi
 
 # Get music file
 music=$(zenity --file-selection --text="Music file")
 [ $? -ne 0 ] && exit 1
 
 # Verify Music
-if [ -z "$music" ]; then zenity --error --text="Invalid music file"; exit 1; fi
-if [ ! -f "$music" ]; then zenity --error --text="Failed to access '$music'"; exit 1; fi
+if [ -z "$music" ]; then error "Invalid music file"; exit 1; fi
+if [ ! -f "$music" ]; then error ="Failed to access '$music'"; exit 1; fi
 
 # Get output file
 output=$(zenity --save --file-selection --confirm-overwrite --filename="output.mp4" --text="Output file")
 [ $? -ne 0 ] && exit 1
-if [ -z "$output" ]; then zenity --error --text="Invalid output file"; exit 1; fi
+if [ -z "$output" ]; then error "Invalid output file"; exit 1; fi
 
-mkslideshow -m "$music" "$pepe_dir" "$output" 
+if mkslideshow -m "$music" "$pepe_dir" "$output"; then
+   zenity --info --text="Slideshow located at '$music'"
+else
+   error "Failed to create Slideshow."
+fi
+
+
